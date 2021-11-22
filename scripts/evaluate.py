@@ -1,17 +1,13 @@
+from scripts.train import ToxicClassifier
+import detoxify.utils.data_loaders as module_data
 import argparse
-import json
-import os
-import warnings
-
-import numpy as np
-import pandas as pd
-import src.data_loaders as module_data
 import torch
-from sklearn.metrics import roc_auc_score
-from src.data_loaders import JigsawDataBias, JigsawDataMultilingual, JigsawDataOriginal
 from torch.utils.data import DataLoader
+import json
 from tqdm import tqdm
-from train import ToxicClassifier
+from sklearn.metrics import roc_auc_score
+import numpy as np
+import warnings
 
 
 def test_classifier(config, dataset, checkpoint_path, device="cuda:0"):

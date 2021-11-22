@@ -1,16 +1,17 @@
-from detoxify.detoxify import (
-    Detoxify,
-    multilingual_toxic_xlm_r,
-    toxic_albert,
-    toxic_bert,
-    unbiased_albert,
-    unbiased_toxic_roberta,
-)
 from transformers import (
-    AlbertForSequenceClassification,
     BertForSequenceClassification,
+    AlbertForSequenceClassification,
     RobertaForSequenceClassification,
     XLMRobertaForSequenceClassification,
+)
+
+from detoxify.core import (
+    toxic_bert,
+    toxic_albert,
+    unbiased_toxic_roberta,
+    unbiased_albert,
+    multilingual_toxic_xlm_r,
+    Detoxify,
 )
 
 CLASSES = [

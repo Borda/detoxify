@@ -1,4 +1,4 @@
-from .detoxify import (
+from detoxify.core import (
     Detoxify,
     multilingual_toxic_xlm_r,
     toxic_albert,
