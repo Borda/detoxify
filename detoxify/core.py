@@ -7,7 +7,7 @@ MODEL_URLS = {
     "unbiased": DOWNLOAD_URL + "v0.3-alpha/toxic_debiased-c7548aa0.ckpt",
     "multilingual": DOWNLOAD_URL + "v0.4-alpha/multilingual_debiased-0b549669.ckpt",
     "original-small": DOWNLOAD_URL + "v0.1.2/original-albert-0e1d6498.ckpt",
-    "unbiased-small": DOWNLOAD_URL + "v0.1.2/unbiased-albert-c8519128.ckpt",
+    "unbiased-small": DOWNLOAD_URL + "v0.1.2/unbiased-albert-c8519128.ckpt"
 }
 
 PRETRAINED_MODEL = None
@@ -85,6 +85,7 @@ class Detoxify:
         model_type(str): model type to be loaded, can be either original,
                          unbiased or multilingual
         checkpoint(str): checkpoint path, defaults to None
+        device(str or torch.device): accepts any torch.device input or torch.device object, defaults to cpu
         device(str or torch.device): accepts any torch.device input or
                                      torch.device object, defaults to cpu
     Returns:
