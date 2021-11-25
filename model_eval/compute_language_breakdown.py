@@ -1,6 +1,7 @@
-import pandas as pd
-import json
 import argparse
+import json
+
+import pandas as pd
 from utils import compute_subgroup_auc
 
 
@@ -11,9 +12,7 @@ def convert_dataframe_to_bool(df):
     return bool_df
 
 
-def compute_lang_metrics_for_model(
-    dataset, subgroups, model, label_col
-):
+def compute_lang_metrics_for_model(dataset, subgroups, model, label_col):
     """Computes per-subgroup metrics for all subgroups and one model."""
     records = []
     for subgroup in subgroups:
@@ -27,7 +26,7 @@ def compute_lang_metrics_for_model(
 
 
 def main():
-    with open(TEST, "r") as f:
+    with open(TEST) as f:
         results = json.load(f)
 
     test_private_path = (

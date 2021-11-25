@@ -1,8 +1,9 @@
-import pandas as pd
-import json
-import numpy as np
-from sklearn.metrics import roc_auc_score
 import argparse
+import json
+
+import numpy as np
+import pandas as pd
+from sklearn.metrics import roc_auc_score
 from utils import compute_auc, compute_subgroup_auc
 
 
@@ -22,9 +23,7 @@ def compute_bnsp_auc(df, subgroup, label, model_name):
     return compute_auc(examples[label], examples[model_name])
 
 
-def compute_bias_metrics_for_model(
-    dataset, subgroups, model, label_col
-):
+def compute_bias_metrics_for_model(dataset, subgroups, model, label_col):
     """Computes per-subgroup metrics for all subgroups and one model."""
     records = []
     for subgroup in subgroups:
@@ -75,7 +74,7 @@ def get_final_metric(bias_df, overall_auc, POWER=-5, OVERALL_MODEL_WEIGHT=0.25):
 
 
 def main():
-    with open(TEST, "r") as f:
+    with open(TEST) as f:
         results = json.load(f)
 
     test_private_path = "jigsaw_data/jigsaw-unintended-bias-in-toxicity-classification/test_private_expanded.csv"

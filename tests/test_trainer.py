@@ -1,10 +1,10 @@
-from pytorch_lightning import Trainer, seed_everything
-
-from train import ToxicClassifier
-import src.data_loaders as module_data
-from torch.utils.data import DataLoader
 import json
+
+import src.data_loaders as module_data
 import torch
+from pytorch_lightning import Trainer, seed_everything
+from torch.utils.data import DataLoader
+from train import ToxicClassifier
 
 
 def initialize_trainer(CONFIG):

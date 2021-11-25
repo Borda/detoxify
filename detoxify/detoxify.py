@@ -1,12 +1,13 @@
 import torch
 import transformers
 
+DOWNLOAD_URL = "https://github.com/unitaryai/detoxify/releases/download/"
 MODEL_URLS = {
-    "original": "https://github.com/unitaryai/detoxify/releases/download/v0.1-alpha/toxic_original-c1212f89.ckpt",
-    "unbiased": "https://github.com/unitaryai/detoxify/releases/download/v0.3-alpha/toxic_debiased-c7548aa0.ckpt",
-    "multilingual": "https://github.com/unitaryai/detoxify/releases/download/v0.4-alpha/multilingual_debiased-0b549669.ckpt",
-    "original-small": "https://github.com/unitaryai/detoxify/releases/download/v0.1.2/original-albert-0e1d6498.ckpt",
-    "unbiased-small": "https://github.com/unitaryai/detoxify/releases/download/v0.1.2/unbiased-albert-c8519128.ckpt"
+    "original": DOWNLOAD_URL + "v0.1-alpha/toxic_original-c1212f89.ckpt",
+    "unbiased": DOWNLOAD_URL + "v0.3-alpha/toxic_debiased-c7548aa0.ckpt",
+    "multilingual": DOWNLOAD_URL + "v0.4-alpha/multilingual_debiased-0b549669.ckpt",
+    "original-small": DOWNLOAD_URL + "v0.1.2/original-albert-0e1d6498.ckpt",
+    "unbiased-small": DOWNLOAD_URL + "v0.1.2/unbiased-albert-c8519128.ckpt",
 }
 
 PRETRAINED_MODEL = None
@@ -27,10 +28,12 @@ def get_model_and_tokenizer(
     return model, tokenizer
 
 
-def load_checkpoint(model_type="original", checkpoint=None, device='cpu'):
+def load_checkpoint(model_type="original", checkpoint=None, device="cpu"):
     if checkpoint is None:
         checkpoint_path = MODEL_URLS[model_type]
-        loaded = torch.hub.load_state_dict_from_url(checkpoint_path, map_location=device)
+        loaded = torch.hub.load_state_dict_from_url(
+            checkpoint_path, map_location=device
+        )
     else:
         loaded = torch.load(checkpoint)
         if "config" not in loaded or "state_dict" not in loaded:
@@ -82,20 +85,21 @@ class Detoxify:
         model_type(str): model type to be loaded, can be either original,
                          unbiased or multilingual
         checkpoint(str): checkpoint path, defaults to None
-        device(str or torch.device): accepts any torch.device input or 
+        device(str or torch.device): accepts any torch.device input or
                                      torch.device object, defaults to cpu
     Returns:
         results(dict): dictionary of output scores for each class
     """
 
-    def __init__(self, model_type="original", checkpoint=PRETRAINED_MODEL, device="cpu"):
-        super(Detoxify, self).__init__()
+    def __init__(
+        self, model_type="original", checkpoint=PRETRAINED_MODEL, device="cpu"
+    ):
+        super().__init__()
         self.model, self.tokenizer, self.class_names = load_checkpoint(
             model_type=model_type, checkpoint=checkpoint, device=device
         )
         self.device = device
         self.model.to(self.device)
-
 
     @torch.no_grad()
     def predict(self, text):
