@@ -1,5 +1,5 @@
 from scripts.train import ToxicClassifier
-import detoxify.utils.data_loaders as module_data
+import detoxify.data as module_data
 import argparse
 import torch
 from torch.utils.data import DataLoader
