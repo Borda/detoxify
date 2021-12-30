@@ -5,8 +5,9 @@
 
 [![PyPI version](https://badge.fury.io/py/detoxify.svg)](https://badge.fury.io/py/detoxify)
 ![GitHub all releases](https://img.shields.io/github/downloads/unitaryai/detoxify/total)
-![CI testing](https://github.com/unitaryai/detoxify/workflows/CI%20testing/badge.svg)
-![Lint](https://github.com/unitaryai/detoxify/workflows/Lint/badge.svg)
+![CI testing](https://github.com/Borda/detoxify/workflows/CI%20testing/badge.svg)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Borda/detoxify/master.svg)](https://results.pre-commit.ci/latest/github/Borda/detoxify/master)
+
 
 </div>
  
