@@ -1,10 +1,3 @@
-from transformers import (
-    BertForSequenceClassification,
-    AlbertForSequenceClassification,
-    RobertaForSequenceClassification,
-    XLMRobertaForSequenceClassification,
-)
-
 from detoxify.model import (
     toxic_bert,
     toxic_albert,
@@ -12,6 +5,12 @@ from detoxify.model import (
     unbiased_albert,
     multilingual_toxic_xlm_r,
     Detoxify,
+)
+from transformers import (
+    BertForSequenceClassification,
+    AlbertForSequenceClassification,
+    RobertaForSequenceClassification,
+    XLMRobertaForSequenceClassification,
 )
 
 CLASSES = [

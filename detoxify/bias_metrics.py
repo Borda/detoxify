@@ -1,5 +1,6 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 try:
     from sklearn.metrics import roc_auc_score
 except ImportError:
@@ -58,9 +59,7 @@ def compute_bnsp_auc(df, subgroup, label, model_name):
     return compute_auc(examples[label], examples[model_name])
 
 
-def compute_bias_metrics_for_model(
-    dataset, subgroups, model, label_col
-):
+def compute_bias_metrics_for_model(dataset, subgroups, model, label_col):
     """Computes per-subgroup metrics for all subgroups and one model."""
     records = []
     for subgroup in subgroups:
@@ -110,9 +109,7 @@ def get_final_metric(bias_df, overall_auc, POWER=-5, OVERALL_MODEL_WEIGHT=0.25):
     )
 
 
-def compute_lang_metrics_for_model(
-    dataset, subgroups, model, label_col
-):
+def compute_lang_metrics_for_model(dataset, subgroups, model, label_col):
     """Computes per-subgroup metrics for all subgroups and one model."""
     records = []
     for subgroup in subgroups:

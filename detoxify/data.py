@@ -1,6 +1,7 @@
-from torch.utils.data.dataset import Dataset
-import torch
 import numpy as np
+import torch
+from torch.utils.data.dataset import Dataset
+
 try:
     import datasets
 except ImportError:

@@ -1,10 +1,15 @@
+import argparse
+import json
+
 import numpy as np
 import pandas as pd
-import json
-import argparse
-
-from detoxify.bias_metrics import convert_dataframe_to_bool, compute_lang_metrics_for_model, \
-    MODEL_NAME, LANGS, TOXICITY_COLUMN
+from detoxify.bias_metrics import (
+    convert_dataframe_to_bool,
+    compute_lang_metrics_for_model,
+    MODEL_NAME,
+    LANGS,
+    TOXICITY_COLUMN,
+)
 
 
 def main():

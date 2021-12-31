@@ -1,13 +1,14 @@
-from scripts.train import ToxicClassifier
-import detoxify.data as module_data
 import argparse
-import torch
-from torch.utils.data import DataLoader
 import json
-from tqdm import tqdm
-from sklearn.metrics import roc_auc_score
-import numpy as np
 import warnings
+
+import detoxify.data as module_data
+import numpy as np
+import torch
+from scripts.train import ToxicClassifier
+from sklearn.metrics import roc_auc_score
+from torch.utils.data import DataLoader
+from tqdm import tqdm
 
 
 def test_classifier(config, dataset, checkpoint_path, device="cuda:0"):

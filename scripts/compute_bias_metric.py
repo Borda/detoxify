@@ -1,13 +1,20 @@
-import pandas as pd
-import json
 import argparse
+import json
 
-from detoxify.bias_metrics import convert_dataframe_to_bool, MODEL_NAME, compute_bias_metrics_for_model, \
-    IDENTITY_COLUMNS, TOXICITY_COLUMN, get_final_metric, calculate_overall_auc
+import pandas as pd
+from detoxify.bias_metrics import (
+    convert_dataframe_to_bool,
+    MODEL_NAME,
+    compute_bias_metrics_for_model,
+    IDENTITY_COLUMNS,
+    TOXICITY_COLUMN,
+    get_final_metric,
+    calculate_overall_auc,
+)
 
 
 def main():
-    with open(TEST, "r") as f:
+    with open(TEST) as f:
         results = json.load(f)
 
     test_private_path = "jigsaw_data/jigsaw-unintended-bias-in-toxicity-classification/test_private_expanded.csv"
