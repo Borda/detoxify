@@ -32,14 +32,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--test_csv", type=str)
     parser.add_argument("--val_csv", type=str)
-    parser.add_argument(
-        "--update_test",
-        action="store_true",
-    )
-    parser.add_argument(
-        "--create_val_set",
-        action="store_true",
-    )
+    parser.add_argument("--update_test", action="store_true")
+    parser.add_argument("--create_val_set", action="store_true")
     args = parser.parse_args()
     if args.update_test:
         test_set = update_test(args.test_csv)

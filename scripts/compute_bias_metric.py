@@ -3,13 +3,13 @@ import json
 
 import pandas as pd
 from detoxify.bias_metrics import (
-    convert_dataframe_to_bool,
-    MODEL_NAME,
-    compute_bias_metrics_for_model,
     IDENTITY_COLUMNS,
+    MODEL_NAME,
     TOXICITY_COLUMN,
-    get_final_metric,
     calculate_overall_auc,
+    compute_bias_metrics_for_model,
+    convert_dataframe_to_bool,
+    get_final_metric,
 )
 
 
@@ -23,24 +23,16 @@ def main():
 
     test_private[MODEL_NAME] = [s[0] for s in results["scores"]]
 
-    bias_metrics_df = compute_bias_metrics_for_model(
-        test_private, IDENTITY_COLUMNS, MODEL_NAME, TOXICITY_COLUMN
-    )
+    bias_metrics_df = compute_bias_metrics_for_model(test_private, IDENTITY_COLUMNS, MODEL_NAME, TOXICITY_COLUMN)
     print(bias_metrics_df)
 
-    final_metric = get_final_metric(
-        bias_metrics_df, calculate_overall_auc(test_private, MODEL_NAME)
-    )
+    final_metric = get_final_metric(bias_metrics_df, calculate_overall_auc(test_private, MODEL_NAME))
     print(final_metric)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "res_path",
-        type=str,
-        help="path to the saved results file",
-    )
+    parser.add_argument("res_path", type=str, help="path to the saved results file")
     args = parser.parse_args()
 
     TEST = args.res_path

@@ -63,10 +63,7 @@ def compute_bias_metrics_for_model(dataset, subgroups, model, label_col):
     """Computes per-subgroup metrics for all subgroups and one model."""
     records = []
     for subgroup in subgroups:
-        record = {
-            "subgroup": subgroup,
-            "subgroup_size": len(dataset[dataset[subgroup]]),
-        }
+        record = {"subgroup": subgroup, "subgroup_size": len(dataset[dataset[subgroup]])}
         record[SUBGROUP_AUC] = compute_subgroup_auc(dataset, subgroup, label_col, model)
         record[BPSN_AUC] = compute_bpsn_auc(dataset, subgroup, label_col, model)
         record[BNSP_AUC] = compute_bnsp_auc(dataset, subgroup, label_col, model)
@@ -104,19 +101,14 @@ def get_final_metric(bias_df, overall_auc, POWER=-5, OVERALL_MODEL_WEIGHT=0.25):
             power_mean(bias_df[BNSP_AUC], POWER),
         ]
     )
-    return (OVERALL_MODEL_WEIGHT * overall_auc) + (
-        (1 - OVERALL_MODEL_WEIGHT) * bias_score
-    )
+    return (OVERALL_MODEL_WEIGHT * overall_auc) + ((1 - OVERALL_MODEL_WEIGHT) * bias_score)
 
 
 def compute_lang_metrics_for_model(dataset, subgroups, model, label_col):
     """Computes per-subgroup metrics for all subgroups and one model."""
     records = []
     for subgroup in subgroups:
-        record = {
-            "subgroup": subgroup,
-            "subgroup_size": len(dataset[dataset[subgroup]]),
-        }
+        record = {"subgroup": subgroup, "subgroup_size": len(dataset[dataset[subgroup]])}
         record[SUBGROUP_AUC] = compute_subgroup_auc(dataset, subgroup, label_col, model)
         records.append(record)
     return pd.DataFrame(records).sort_values("subgroup_auc", ascending=True)

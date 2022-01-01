@@ -36,9 +36,7 @@ class ToxicClassifier(pl.LightningModule):
         self.config = config
 
     def forward(self, x):
-        inputs = self.tokenizer(
-            x, return_tensors="pt", truncation=True, padding=True
-        ).to(self.model.device)
+        inputs = self.tokenizer(x, return_tensors="pt", truncation=True, padding=True).to(self.model.device)
         outputs = self.model(**inputs)[0]
         return outputs
 
@@ -141,36 +139,13 @@ def cli_main():
 
     # args
     parser = argparse.ArgumentParser()
+    parser.add_argument("-c", "--config", default=None, type=str, help="config file path (default: None)")
+    parser.add_argument("-r", "--resume", default=None, type=str, help="path to latest checkpoint (default: None)")
+    parser.add_argument("-d", "--device", default=None, type=str, help="indices of GPUs to enable (default: all)")
     parser.add_argument(
-        "-c",
-        "--config",
-        default=None,
-        type=str,
-        help="config file path (default: None)",
+        "--num_workers", default=10, type=str, help="number of workers used in the data loader (default: 10)"
     )
-    parser.add_argument(
-        "-r",
-        "--resume",
-        default=None,
-        type=str,
-        help="path to latest checkpoint (default: None)",
-    )
-    parser.add_argument(
-        "-d",
-        "--device",
-        default=None,
-        type=str,
-        help="indices of GPUs to enable (default: all)",
-    )
-    parser.add_argument(
-        "--num_workers",
-        default=10,
-        type=str,
-        help="number of workers used in the data loader (default: 10)",
-    )
-    parser.add_argument(
-        "-e", "--n_epochs", default=100, type=int, help="if given, override the num"
-    )
+    parser.add_argument("-e", "--n_epochs", default=100, type=int, help="if given, override the num")
 
     args = parser.parse_args()
     config = json.load(open(args.config))
@@ -180,9 +155,7 @@ def cli_main():
 
     # data
     def get_instance(module, name, config, *args, **kwargs):
-        return getattr(module, config[name]["type"])(
-            *args, **config[name]["args"], **kwargs
-        )
+        return getattr(module, config[name]["type"])(*args, **config[name]["args"], **kwargs)
 
     dataset = get_instance(module_data, "dataset", config)
     val_dataset = get_instance(module_data, "dataset", config, train=False)
@@ -197,22 +170,14 @@ def cli_main():
     )
 
     valid_data_loader = DataLoader(
-        val_dataset,
-        batch_size=config["batch_size"],
-        num_workers=args.num_workers,
-        shuffle=False,
+        val_dataset, batch_size=config["batch_size"], num_workers=args.num_workers, shuffle=False
     )
     # model
     model = ToxicClassifier(config)
 
     # training
 
-    checkpoint_callback = ModelCheckpoint(
-        save_top_k=100,
-        verbose=True,
-        monitor="val_loss",
-        mode="min",
-    )
+    checkpoint_callback = ModelCheckpoint(save_top_k=100, verbose=True, monitor="val_loss", mode="min")
     trainer = pl.Trainer(
         gpus=args.device,
         max_epochs=args.n_epochs,

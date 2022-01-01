@@ -13,15 +13,10 @@ MODEL_URLS = {
 PRETRAINED_MODEL = None
 
 
-def get_model_and_tokenizer(
-    model_type, model_name, tokenizer_name, num_classes, state_dict
-):
+def get_model_and_tokenizer(model_type, model_name, tokenizer_name, num_classes, state_dict):
     model_class = getattr(transformers, model_name)
     model = model_class.from_pretrained(
-        pretrained_model_name_or_path=None,
-        config=model_type,
-        num_labels=num_classes,
-        state_dict=state_dict,
+        pretrained_model_name_or_path=None, config=model_type, num_labels=num_classes, state_dict=state_dict
     )
     tokenizer = getattr(transformers, tokenizer_name).from_pretrained(model_type)
 
@@ -31,9 +26,7 @@ def get_model_and_tokenizer(
 def load_checkpoint(model_type="original", checkpoint=None, device="cpu"):
     if checkpoint is None:
         checkpoint_path = MODEL_URLS[model_type]
-        loaded = torch.hub.load_state_dict_from_url(
-            checkpoint_path, map_location=device
-        )
+        loaded = torch.hub.load_state_dict_from_url(checkpoint_path, map_location=device)
     else:
         loaded = torch.load(checkpoint)
         if "config" not in loaded or "state_dict" not in loaded:
@@ -43,15 +36,9 @@ def load_checkpoint(model_type="original", checkpoint=None, device="cpu"):
             )
     class_names = loaded["config"]["dataset"]["args"]["classes"]
     # standardise class names between models
-    change_names = {
-        "toxic": "toxicity",
-        "identity_hate": "identity_attack",
-        "severe_toxic": "severe_toxicity",
-    }
+    change_names = {"toxic": "toxicity", "identity_hate": "identity_attack", "severe_toxic": "severe_toxicity"}
     class_names = [change_names.get(cl, cl) for cl in class_names]
-    model, tokenizer = get_model_and_tokenizer(
-        **loaded["config"]["arch"]["args"], state_dict=loaded["state_dict"]
-    )
+    model, tokenizer = get_model_and_tokenizer(**loaded["config"]["arch"]["args"], state_dict=loaded["state_dict"])
 
     return model, tokenizer, class_names
 
@@ -90,9 +77,7 @@ class Detoxify:
         results(dict): dictionary of output scores for each class
     """
 
-    def __init__(
-        self, model_type="original", checkpoint=PRETRAINED_MODEL, device="cpu"
-    ):
+    def __init__(self, model_type="original", checkpoint=PRETRAINED_MODEL, device="cpu"):
         super().__init__()
         self.model, self.tokenizer, self.class_names = load_checkpoint(
             model_type=model_type, checkpoint=checkpoint, device=device
@@ -103,17 +88,13 @@ class Detoxify:
     @torch.no_grad()
     def predict(self, text):
         self.model.eval()
-        inputs = self.tokenizer(
-            text, return_tensors="pt", truncation=True, padding=True
-        ).to(self.model.device)
+        inputs = self.tokenizer(text, return_tensors="pt", truncation=True, padding=True).to(self.model.device)
         out = self.model(**inputs)[0]
         scores = torch.sigmoid(out).cpu().detach().numpy()
         results = {}
         for i, cla in enumerate(self.class_names):
             results[cla] = (
-                scores[0][i]
-                if isinstance(text, str)
-                else [scores[ex_i][i].tolist() for ex_i in range(len(scores))]
+                scores[0][i] if isinstance(text, str) else [scores[ex_i][i].tolist() for ex_i in range(len(scores))]
             )
         return results
 

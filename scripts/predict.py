@@ -16,9 +16,7 @@ def load_input_text(input_obj):
     elif isinstance(input_obj, str):
         text = input_obj
     else:
-        raise ValueError(
-            "Invalid input type: input type must be a string or a txt file."
-        )
+        raise ValueError("Invalid input type: input type must be a string or a txt file.")
     return text
 
 
@@ -46,34 +44,16 @@ def run(model_name, input_obj, dest_file, from_ckpt, device="cpu"):
 if __name__ == "__main__":
     # args
     parser = argparse.ArgumentParser()
+    parser.add_argument("--input", type=str, help="text, list of strings, or txt file")
     parser.add_argument(
-        "--input",
-        type=str,
-        help="text, list of strings, or txt file",
+        "--model_name", default="unbiased", type=str, help="Name of the torch.hub model (default: unbiased)"
+    )
+    parser.add_argument("--device", default="cpu", type=str, help="device to load the model on")
+    parser.add_argument(
+        "--from_ckpt_path", default=None, type=str, help="Option to load from the checkpoint path (default: False)"
     )
     parser.add_argument(
-        "--model_name",
-        default="unbiased",
-        type=str,
-        help="Name of the torch.hub model (default: unbiased)",
-    )
-    parser.add_argument(
-        "--device",
-        default="cpu",
-        type=str,
-        help="device to load the model on",
-    )
-    parser.add_argument(
-        "--from_ckpt_path",
-        default=None,
-        type=str,
-        help="Option to load from the checkpoint path (default: False)",
-    )
-    parser.add_argument(
-        "--save_to",
-        default=None,
-        type=str,
-        help="destination path to output model results to (default: None)",
+        "--save_to", default=None, type=str, help="destination path to output model results to (default: None)"
     )
 
     args = parser.parse_args()
@@ -81,11 +61,7 @@ if __name__ == "__main__":
     assert args.from_ckpt_path is not None or args.model_name is not None
 
     if args.model_name is not None:
-        assert args.model_name in [
-            "original",
-            "unbiased",
-            "multilingual",
-        ]
+        assert args.model_name in ["original", "unbiased", "multilingual"]
 
     if args.from_ckpt_path is not None and args.model_name is not None:
         raise ValueError(
@@ -94,10 +70,4 @@ if __name__ == "__main__":
     if args.from_ckpt_path is not None:
         assert os.path.isfile(args.from_ckpt_path)
 
-    run(
-        args.model_name,
-        args.input,
-        args.save_to,
-        args.from_ckpt_path,
-        device=args.device,
-    )
+    run(args.model_name, args.input, args.save_to, args.from_ckpt_path, device=args.device)

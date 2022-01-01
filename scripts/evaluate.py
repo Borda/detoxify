@@ -20,20 +20,13 @@ def test_classifier(config, dataset, checkpoint_path, device="cuda:0"):
     model.to(device)
 
     def get_instance(module, name, config, *args, **kwargs):
-        return getattr(module, config[name]["type"])(
-            *args, **config[name]["args"], **kwargs
-        )
+        return getattr(module, config[name]["type"])(*args, **config[name]["args"], **kwargs)
 
     config["dataset"]["args"]["test_csv_file"] = dataset
 
     test_dataset = get_instance(module_data, "dataset", config, train=False)
 
-    test_data_loader = DataLoader(
-        test_dataset,
-        batch_size=int(config["batch_size"]),
-        num_workers=20,
-        shuffle=False,
-    )
+    test_data_loader = DataLoader(test_dataset, batch_size=int(config["batch_size"]), num_workers=20, shuffle=False)
 
     scores = []
     targets = []
@@ -84,33 +77,10 @@ def test_classifier(config, dataset, checkpoint_path, device="cuda:0"):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="PyTorch Template")
-    parser.add_argument(
-        "-c",
-        "--config",
-        default=None,
-        type=str,
-        help="config file path (default: None)",
-    )
-    parser.add_argument(
-        "-ckpt",
-        "--checkpoint",
-        type=str,
-        help="path to a saved checkpoint",
-    )
-    parser.add_argument(
-        "-d",
-        "--device",
-        default=None,
-        type=str,
-        help="path to a saved checkpoint",
-    )
-    parser.add_argument(
-        "-t",
-        "--test_csv",
-        default=None,
-        type=str,
-        help="path to a saved checkpoint",
-    )
+    parser.add_argument("-c", "--config", default=None, type=str, help="config file path (default: None)")
+    parser.add_argument("-ckpt", "--checkpoint", type=str, help="path to a saved checkpoint")
+    parser.add_argument("-d", "--device", default=None, type=str, help="path to a saved checkpoint")
+    parser.add_argument("-t", "--test_csv", default=None, type=str, help="path to a saved checkpoint")
 
     args = parser.parse_args()
     config = json.load(open(args.config))
@@ -118,9 +88,7 @@ if __name__ == "__main__":
     if args.device is not None:
         config["gpus"] = args.device
 
-    results = test_classifier(
-        config, args.test_csv, args.checkpoint, "cuda:" + args.device
-    )
+    results = test_classifier(config, args.test_csv, args.checkpoint, "cuda:" + args.device)
     test_set_name = args.test_csv.split("/")[-1:][0]
 
     with open(args.checkpoint[:-4] + f"results_{test_set_name}.json", "w") as f:
