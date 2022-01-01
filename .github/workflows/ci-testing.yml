@@ -5,8 +5,7 @@ on:
   # Trigger the workflow on push or pull request, but only for the master branch
   push: {}
   pull_request:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
   pytest:
@@ -60,7 +59,7 @@ jobs:
 
     - name: Tests
       run: |
-        coverage run --source src,detoxify -m py.test src tests -v --junitxml=junit/test-results-${{ runner.os }}-${{ matrix.python-version }}.xml
+        coverage run --source detoxify -m py.test detoxify tests -v --junitxml=junit/test-results-${{ runner.os }}-${{ matrix.python-version }}.xml
 
     - name: Statistics
       if: success()

@@ -1,14 +1,14 @@
-from detoxify.detoxify import (
-    Detoxify,
-    multilingual_toxic_xlm_r,
-    toxic_albert,
+from detoxify.model import (
     toxic_bert,
-    unbiased_albert,
+    toxic_albert,
     unbiased_toxic_roberta,
+    unbiased_albert,
+    multilingual_toxic_xlm_r,
+    Detoxify,
 )
 from transformers import (
-    AlbertForSequenceClassification,
     BertForSequenceClassification,
+    AlbertForSequenceClassification,
     RobertaForSequenceClassification,
     XLMRobertaForSequenceClassification,
 )

@@ -1,10 +1,46 @@
-import argparse
-import json
-
 import numpy as np
 import pandas as pd
-from sklearn.metrics import roc_auc_score
-from utils import compute_auc, compute_subgroup_auc
+
+try:
+    from sklearn.metrics import roc_auc_score
+except ImportError:
+    print("Package `sklearn` is missing.")
+
+IDENTITY_COLUMNS = [
+    "male",
+    "female",
+    "homosexual_gay_or_lesbian",
+    "christian",
+    "jewish",
+    "muslim",
+    "black",
+    "white",
+    "psychiatric_or_mental_illness",
+]
+
+TOXICITY_COLUMN = "toxicity"
+MODEL_NAME = "Roberta"
+SUBGROUP_AUC = "subgroup_auc"
+
+# stands for background positive, subgroup negative
+BPSN_AUC = "bpsn_auc"
+
+# stands for background negative, subgroup positive
+BNSP_AUC = "bnsp_auc"
+
+LANGS = ["es", "fr", "pt", "ru", "it", "tr"]
+
+
+def compute_auc(y_true, y_pred):
+    try:
+        return roc_auc_score(y_true, y_pred)
+    except ValueError:
+        return np.nan
+
+
+def compute_subgroup_auc(df, subgroup, label, model_name):
+    subgroup_examples = df[df[subgroup]]
+    return compute_auc(subgroup_examples[label], subgroup_examples[model_name])
 
 
 def compute_bpsn_auc(df, subgroup, label, model_name):
@@ -73,58 +109,14 @@ def get_final_metric(bias_df, overall_auc, POWER=-5, OVERALL_MODEL_WEIGHT=0.25):
     )
 
 
-def main():
-    with open(TEST) as f:
-        results = json.load(f)
-
-    test_private_path = "jigsaw_data/jigsaw-unintended-bias-in-toxicity-classification/test_private_expanded.csv"
-    test_private = pd.read_csv(test_private_path)
-    test_private = convert_dataframe_to_bool(test_private)
-
-    test_private[MODEL_NAME] = [s[0] for s in results["scores"]]
-
-    bias_metrics_df = compute_bias_metrics_for_model(
-        test_private, IDENTITY_COLUMNS, MODEL_NAME, TOXICITY_COLUMN
-    )
-    print(bias_metrics_df)
-
-    final_metric = get_final_metric(
-        bias_metrics_df, calculate_overall_auc(test_private, MODEL_NAME)
-    )
-    print(final_metric)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "res_path",
-        type=str,
-        help="path to the saved results file",
-    )
-    args = parser.parse_args()
-
-    TEST = args.res_path
-
-    IDENTITY_COLUMNS = [
-        "male",
-        "female",
-        "homosexual_gay_or_lesbian",
-        "christian",
-        "jewish",
-        "muslim",
-        "black",
-        "white",
-        "psychiatric_or_mental_illness",
-    ]
-
-    TOXICITY_COLUMN = "toxicity"
-    MODEL_NAME = "Roberta"
-    SUBGROUP_AUC = "subgroup_auc"
-
-    # stands for background positive, subgroup negative
-    BPSN_AUC = "bpsn_auc"
-
-    # stands for background negative, subgroup positive
-    BNSP_AUC = "bnsp_auc"
-
-    main()
+def compute_lang_metrics_for_model(dataset, subgroups, model, label_col):
+    """Computes per-subgroup metrics for all subgroups and one model."""
+    records = []
+    for subgroup in subgroups:
+        record = {
+            "subgroup": subgroup,
+            "subgroup_size": len(dataset[dataset[subgroup]]),
+        }
+        record[SUBGROUP_AUC] = compute_subgroup_auc(dataset, subgroup, label_col, model)
+        records.append(record)
+    return pd.DataFrame(records).sort_values("subgroup_auc", ascending=True)

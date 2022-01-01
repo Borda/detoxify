@@ -45,7 +45,7 @@ Dependencies:
 
 | Challenge | Year | Goal | Original Data Source | Detoxify Model Name | Top Kaggle Leaderboard Score % | Detoxify Score %
 |-|-|-|-|-|-|-|
-| [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge) | 2018 |  build a multi-headed model that’s capable of detecting different types of toxicity like threats, obscenity, insults, and identity-based hate. | Wikipedia Comments | `original` | 98.86 | 98.64
+| [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge) | 2018 |  build a multi-headed model that’s capable of detecting different types of of toxicity like threats, obscenity, insults, and identity-based hate. | Wikipedia Comments | `original` | 98.86 | 98.64
 | [Jigsaw Unintended Bias in Toxicity Classification](https://www.kaggle.com/c/jigsaw-unintended-bias-in-toxicity-classification) | 2019 | build a model that recognizes toxicity and minimizes this type of unintended bias with respect to mentions of identities. You'll be using a dataset labeled for identity mentions and optimizing a metric designed to measure unintended bias. | Civil Comments | `unbiased` | 94.73 | 93.74
 | [Jigsaw Multilingual Toxic Comment Classification](https://www.kaggle.com/c/jigsaw-multilingual-toxic-comment-classification) | 2020 | build effective multilingual models | Wikipedia Comments + Civil Comments | `multilingual` | 95.36 | 92.11
 
@@ -182,9 +182,7 @@ pip install -e detoxify
 cd detoxify
 
 # for training
-pip install -r requirements-train.txt
-# or simple
-pip install .[train]
+pip install -r requirements.txt
 
  ```
 
@@ -203,19 +201,19 @@ For a quick prediction can run the example script on a comment directly or from 
 
 # load model via torch.hub
 
-python run_prediction.py --input 'example' --model_name original
+python scripts/predict.py --input 'example' --model_name original
 
 # load model from from checkpoint path
 
-python run_prediction.py --input 'example' --from_ckpt_path model_path
+python scripts/predict.py --input 'example' --from_ckpt_path model_path
 
 # save results to a .csv file
 
-python run_prediction.py --input test_set.txt --model_name original --save_to results.csv
+python scripts/predict.py --input test_set.txt --model_name original --save_to results.csv
 
 # to see usage
 
-python run_prediction.py --help
+python scripts/predict.py --help
 
 ```
 
@@ -279,15 +277,15 @@ kaggle competitions download -c jigsaw-multilingual-toxic-comment-classification
  ```bash
 
 # combine test.csv and test_labels.csv
-python preprocessing_utils.py --test_csv jigsaw_data/jigsaw-toxic-comment-classification-challenge/test.csv --update_test
+python scripts/preprocessing_splits.py --test_csv jigsaw_data/jigsaw-toxic-comment-classification-challenge/test.csv --update_test
 
-python train.py --config configs/Toxic_comment_classification_BERT.json
+python scripts/train.py --config configs/Toxic_comment_classification_BERT.json
 ```
  ### Unintended Bias in Toxicicity Challenge
 
 ```bash
 
-python train.py --config configs/Unintended_bias_toxic_comment_classification_RoBERTa_combined.json
+python scripts/train.py --config configs/Unintended_bias_toxic_comment_classification_RoBERTa_combined.json
 
 ```
  ### Multilingual Toxic Comment Classification
@@ -299,9 +297,9 @@ python train.py --config configs/Unintended_bias_toxic_comment_classification_Ro
 ```bash
 
 # combine test.csv and test_labels.csv
-python preprocessing_utils.py --test_csv jigsaw_data/jigsaw-multilingual-toxic-comment-classification/test.csv --update_test
+python scripts/preprocessing_splits.py --test_csv jigsaw_data/jigsaw-multilingual-toxic-comment-classification/test.csv --update_test
 
-python train.py --config configs/Multilingual_toxic_comment_classification_XLMR.json
+python scripts/train.py --config configs/Multilingual_toxic_comment_classification_XLMR.json
 
 ```
 
@@ -320,7 +318,7 @@ This challenge is evaluated on the mean AUC score of all the labels.
 
 ```bash
 
-python evaluate.py --checkpoint saved/lightning_logs/checkpoints/example_checkpoint.pth --test_csv test.csv
+python scripts/evaluate.py --checkpoint saved/lightning_logs/checkpoints/example_checkpoint.pth --test_csv test.csv
 
 ```
 ### Unintended Bias in Toxicicity Challenge
@@ -329,7 +327,7 @@ This challenge is evaluated on a novel bias metric that combines different AUC s
 
 ```bash
 
-python evaluate.py --checkpoint saved/lightning_logs/checkpoints/example_checkpoint.pth --test_csv test.csv
+python scripts/evaluate.py --checkpoint saved/lightning_logs/checkpoints/example_checkpoint.pth --test_csv test.csv
 
 # to get the final bias metric
 python model_eval/compute_bias_metric.py
@@ -341,7 +339,7 @@ This challenge is evaluated on the AUC score of the main toxic label.
 
 ```bash
 
-python evaluate.py --checkpoint saved/lightning_logs/checkpoints/example_checkpoint.pth --test_csv test.csv
+python scripts/evaluate.py --checkpoint saved/lightning_logs/checkpoints/example_checkpoint.pth --test_csv test.csv
 
 ```
 

@@ -1,28 +1,15 @@
 import argparse
 import json
 
+import numpy as np
 import pandas as pd
-from utils import compute_subgroup_auc
-
-
-def convert_dataframe_to_bool(df):
-    bool_df = df.copy()
-    for la in LANGS:
-        bool_df[la] = df.lang == la
-    return bool_df
-
-
-def compute_lang_metrics_for_model(dataset, subgroups, model, label_col):
-    """Computes per-subgroup metrics for all subgroups and one model."""
-    records = []
-    for subgroup in subgroups:
-        record = {
-            "subgroup": subgroup,
-            "subgroup_size": len(dataset[dataset[subgroup]]),
-        }
-        record[SUBGROUP_AUC] = compute_subgroup_auc(dataset, subgroup, label_col, model)
-        records.append(record)
-    return pd.DataFrame(records).sort_values("subgroup_auc", ascending=True)
+from detoxify.bias_metrics import (
+    convert_dataframe_to_bool,
+    compute_lang_metrics_for_model,
+    MODEL_NAME,
+    LANGS,
+    TOXICITY_COLUMN,
+)
 
 
 def main():
@@ -53,11 +40,5 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     TEST = args.res_path
-
-    LANGS = ["es", "fr", "pt", "ru", "it", "tr"]
-
-    TOXICITY_COLUMN = "toxic"
-    MODEL_NAME = "XLM-R"
-    SUBGROUP_AUC = "subgroup_auc"
 
     main()
